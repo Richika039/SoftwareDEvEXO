@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poké Blindtest</title>
+
+    <!-- Vue 3-->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    <!-- Axios CDN //permet de faire des requêtes HTTP aux API -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.9/dist/axios.min.js"></script>
+    
+    <!-- Bootstrap-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+    <div id="app">
+        <div v-for="pokemon, index in pokemons">
+            <img :src="pokemon.sprites.front_default" @click="validateAnswer(index)"/> 
+        </div>
+        <div>
+            <a href="#" @click="playCry()" class="btn btn-lg btn-primary">Play !</a>
+        </div>
+    </div>  
+
+    <script>
+        let app = Vue.createApp({
+            data(){
+                return {
+                    randomSelection: [1, 2], // 2 nombres entre 1 et 151
+                    pokemons: [
+                        {
+                                name: 'Pokémon 1',
+                            sprites: {
+                                front_default:'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/41.png'
+                            },
+                            cries: {
+                                latest: 'https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/41.ogg'
+                            }
+                        },
+                        {
+                                name: 'Pokémon 2',
+                            sprites: {
+                                front_default:'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/41.png'
+                            },
+                            cries: {
+                                latest: 'https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/41.ogg'
+                            }
+                        }
+                    ],
+                    answer: 0, // 0 ou 1 sauf plus de choix 
+                    choices: 2
+                }
+            },
+            methods: {
+                selectRandom(){
+                    this.randomSelection = []
+                    for(let i = 0; i < this.choices ; i++){
+                        this.randomSelection.push(Math.floor((Math.random() * 151) + 1))
+                    }
+                },
+                getPokemons(){
+                    this.pokemons = []
+                    for(let i = 0; i < this.choices ; i++){
+                        axios.get('https://pokeapi.co/api/v2/pokemon/' + this.randomSelection[i]).then(
+                            response => this.pokemons.push(response.data)
+                        ) // axios pour interroger l'url
+                    }
+                },
+                getAnswer(){
+                    this.answer=Math.floor((Math.random() * this.choices))
+                },
+                playCry(){
+                    var audio = new Audio(this.pokemons[this.answer].cries.latest)
+                    audio.play()
+                },
+                validateAnswer(index){
+                    if(index==this.answer){
+                        alert('gagné !')
+                    }
+                    else{
+                        alert('loser !')
+                    }
+                    this.newGame()
+                },
+                newGame(){
+                    this.selectRandom()
+                    this.getPokemons()
+                    this.getAnswer()
+                }
+            },
+            mounted(){
+               this.newGame()
+            }
+        }).mount('#app')
+    </script>  
+</body>
+</html>

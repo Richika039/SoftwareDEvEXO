@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Facts !</title>
+     <!-- Intégrer VueJS via CDN et framework-->
+     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+     <!--AXIOS CDN "content delivery network" avec JS-->
+     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.9/dist/axios.min.js"></script>
+</head>
+<body>
+    
+    <div id="app">
+        <p>{{fact.text}}</p>
+        <p>
+            <a href="#" @click="getFact()" class="btn btn-primary">Une autre !</a>
+
+        </p>
+    </div>
+        <script>
+            let app = Vue.createApp({
+                data(){
+                    return{
+                        fact:{
+                            text: "Quelque chose d'intéressant !"
+                        }
+                    }
+                },
+              
+                methods: {
+                getFact(){
+                    axios.get('https://uselessfacts.jsph.pl/api/v2/facts/random').then(response =>
+                    this.fact=response.data)
+                },
+            },
+            mounted(){
+                   this.getFact()
+                },
+            }).mount('#app')
+        </script>
+</body>
+</html>

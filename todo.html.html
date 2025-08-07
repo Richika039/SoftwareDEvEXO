@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+    <!-- Intégrer VueJS via CDN -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <!-- Interface de l'application VueJS -->
+    <div id="app">
+        <!-- Affichage du titre de l'application -->
+        <h1>{{titre}}</h1>
+        
+        <!-- Champ de saisie pour entrer une nouvelle tâche -->
+        <input type="text" v-model="nouveauTodo" />
+        
+        <!-- Lien cliquable pour ajouter une tâche si l'entrée n'est pas vide -->
+        <a href="#" @click="ajouterTodo" v-if="nouveauTodo !=''">Ajouter</a>
+        
+        <h2>Mes todos</h2>
+        
+        <ul>
+            <!-- Affichage de la nouvelle tâche en cours d'écriture si elle n'est pas vide -->
+            <li v-if="nouveauTodo !=''">{{nouveauTodo}}</li>
+            
+            <!-- Première version avec liste statique (commentée) -->
+            <!--
+            <li>Boire un café</li>
+            <li>Manger un burger</li>
+            <li>Coder un peu</li>
+            -->
+            
+            <!-- Deuxième version : affichage dynamique des tâches -->
+            <li v-for="todo in todos">{{todo}}</li>
+        </ul>
+    </div>
+    
+    <!-- Code VueJS -->
+    <script>
+        // Création d'une instance VueJS
+        let app = Vue.createApp({
+            data(){
+                return {
+                    // Définition des données initiales
+                    titre: "La meilleure application ToDo de tous les temps !", // Titre affiché en haut
+                    nouveauTodo: "Quelque chose de cool !", // Valeur initiale du champ de saisie
+                    todos: ["Boire un café", "Manger un burger", "Coder un peu"] // Liste initiale des tâches
+                }
+            },
+            methods: {
+                // Fonction permettant d'ajouter un nouvel élément à la liste
+                ajouterTodo(){
+                    // Ajoute la nouvelle tâche à la liste des todos
+                    this.todos.push(this.nouveauTodo);
+                    
+                    // Réinitialise le champ de saisie après l'ajout
+                    this.nouveauTodo = "";
+                }
+            }
+        }).mount('#app'); // Montre l'application sur l'élément ayant l'id "app"
+    </script>
+</body>
+</html>
